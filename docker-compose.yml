@@ -8,9 +8,12 @@ services:
       context: .
       # location of Dockerfile
       dockerfile: ./nginx/build/Dockerfile
-    # Dockerfileで設定したimage  
+    # Dockerfileで設定したimage
     image: nginx
     container_name: jo-nginx
     ports:
       # macで接続するport / dockerが開いているport
       - 8080:80
+    volumes:
+      # localのパス / コンテナ内のパス
+      - ./app/public:/usr/share/nginx/html
