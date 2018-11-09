@@ -4,16 +4,44 @@ services:
   nginx:
     # build from Dockerfile
     build:
-      # path will be used in Dockerfile
+      # path which will be used in Dockerfile
       context: .
       # location of Dockerfile
-      dockerfile: ./nginx/build/Dockerfile
-    # Dockerfileで設定したimage
+      # 相対パス
+      dockerfile: ./nginx/Dockerfile
+    # name of containr's image
     image: nginx
     container_name: jo-nginx
     ports:
       # macで接続するport / dockerが開いているport
       - 8080:80
     volumes:
+      # 相対パス
       # localのパス / コンテナ内のパス
       - ./app/public:/usr/share/nginx/html
+
+  node:
+    build:
+      context: .
+      dockerfile: ./node/Dockerfile
+    image: node
+    container_name: jo-node
+    ports:
+      - 6000:6000
+
+    # コンテナ内の標準出力とホストの出力を繋げるためのもの
+    # docker run 時の -t オプションに対応
+    # これがないとコンテナがすぐ終了してしまうため、基本的に true
+    tty: true
+
+    volumes:
+      # package.jsonとwebpack.config.jsはdockerfileでCOPYしておく
+
+      # build元
+      - ./app/src:/app/src
+      # build出力先
+      - ./app/public/bundle.js:/app/public/bundle.js
+
+      # 永続化が必要なものに対してはvolumesなどでホスト側に残す
+      - ./node/node_modules:/app/node_modules
+      # - ./node/package-lock.json:/app/package-lock.json
