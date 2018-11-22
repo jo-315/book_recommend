@@ -9,5 +9,6 @@ COPY ./node/package.json /app/package.json
 
 RUN npm install --no-progress
 RUN npm install webpack --save-dev
+RUN npm install --save-dev axios
 
 CMD ["npm", "run", "watch:dev"]
